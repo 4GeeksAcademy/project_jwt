@@ -1,54 +1,61 @@
 const getState = ({ getStore, getActions, setStore }) => {
-	return {
-		store: {
-			message: null,
-			demo: [
-				{
-					title: "FIRST",
-					background: "white",
-					initial: "white"
-				},
-				{
-					title: "SECOND",
-					background: "white",
-					initial: "white"
-				}
-			]
-		},
-		actions: {
-			// Use getActions to call a function within a fuction
-			exampleFunction: () => {
-				getActions().changeColor(0, "green");
-			},
+    return {
+        store: {
+            isAuthenticated: false,
+            user: null,
+            error: null
+        },
+        actions: {
+            // register: async (username, password) => {
+            //     try {
+            //         const response = await fetch('https://verbose-system-wrv597vr56gqf97r9-3001.app.github.dev/register', {
+            //             method: 'POST',
+            //             headers: { 'Content-Type': 'application/json' },
+            //             body: JSON.stringify({ username, password })
+            //         });
 
-			getMessage: async () => {
-				try{
-					// fetching data from the backend
-					const resp = await fetch(process.env.BACKEND_URL + "/api/hello")
-					const data = await resp.json()
-					setStore({ message: data.message })
-					// don't forget to return something, that is how the async resolves
-					return data;
-				}catch(error){
-					console.log("Error loading message from backend", error)
-				}
-			},
-			changeColor: (index, color) => {
-				//get the store
-				const store = getStore();
+            //         if (response.ok) {
+            //             setStore({ ...getStore(), error: null });
+            //             return { success: true };
+            //         } else {
+            //             const error = await response.json();
+            //             setStore({ ...getStore(), error: error.message });
+            //             return { success: false, message: error.message };
+            //         }
+            //     } catch (error) {
+            //         setStore({ ...getStore(), error: error.message });
+            //         return { success: false, message: error.message };
+            //     }
+            // },
 
-				//we have to loop the entire demo array to look for the respective index
-				//and change its color
-				const demo = store.demo.map((elm, i) => {
-					if (i === index) elm.background = color;
-					return elm;
-				});
+            // login: async (username, password) => {
+            //     try {
+            //         const response = await fetch('https://verbose-system-wrv597vr56gqf97r9-3001.app.github.dev/login', {
+            //             method: 'POST',
+            //             headers: { 'Content-Type': 'application/json' },
+            //             body: JSON.stringify({ username, password })
+            //         });
 
-				//reset the global store
-				setStore({ demo: demo });
-			}
-		}
-	};
+            //         if (response.ok) {
+            //             const data = await response.json();
+            //             setStore({ ...getStore(), isAuthenticated: true, user: username, error: null });
+            //             return { success: true };
+            //         } else {
+            //             const error = await response.json();
+            //             setStore({ ...getStore(), error: error.message });
+            //             return { success: false, message: error.message };
+            //         }
+            //     } catch (error) {
+            //         setStore({ ...getStore(), error: error.message });
+            //         return { success: false, message: error.message };
+            //     }
+            // },
+
+            // logout: () => {
+            //     setStore({ ...getStore(), isAuthenticated: false, user: null });
+            // }
+        }
+    };
 };
 
 export default getState;
