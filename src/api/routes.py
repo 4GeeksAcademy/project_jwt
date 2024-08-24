@@ -21,19 +21,22 @@ api = Blueprint('api', __name__)
 @api.route('/register', methods=['POST'])
 def register_user():
     body = request.get_json()
-    name = body.get('name', None)
-    email = body.get('email', None)
-    password = body.get('password', None)
-    if name is None or email is None or password is None:
-        return {'message': 'Missing arguments'}      
+    email = body.get('email')
+    password = body.get('password')
+    
+    if not email or not password:
+        return jsonify({'message': 'Missing arguments'}), 400
+
     bpassword = bytes(password, 'utf-8')
-    salt = bcrypt.gensalt(14)
-    hashed_password = bcrypt.hashpw(password=bpassword, salt=salt)       
-    user = User(name, email,hashed_password.decode('utf-8'))    
-    #return {'message': f'name: {user.name} email: {user.email} password: {password}'}
+    salt = bcrypt.gensalt()
+    hashed_password = bcrypt.hashpw(bpassword, salt)
+    
+    user = User(email, hashed_password.decode('utf-8'))
+    
     db.session.add(user)
     db.session.commit()
-    return {'message': f'User {user.email} was created'}
+    
+    return jsonify({'message': f'User {user.email} was created'}), 201
 
 @api.route('/token', methods=['POST'])
 def create_token():

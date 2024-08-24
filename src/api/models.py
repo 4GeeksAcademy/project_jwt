@@ -6,13 +6,11 @@ bcrypt = Bcrypt()
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(120), unique=False, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(200), unique=False, nullable=False)
     is_active = db.Column(db.Boolean(), unique=False, nullable=False)
 
-    def __init__(self,name, email, password):
-        self.name = name
+    def __init__(self, email, password):
         self.email = email
         self.password = password
         self.is_active = True
@@ -22,8 +20,6 @@ class User(db.Model):
 
     def serialize(self):
         return {
-            "name": self.name,
             "email": self.email,
-            "is_active" : True
-            # do not serialize the password, its a security breach
+            "is_active": self.is_active
         }
