@@ -6,34 +6,24 @@ bcrypt = Bcrypt()
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(120), unique=False, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(80), unique=False, nullable=False)
+    password = db.Column(db.String(200), unique=False, nullable=False)
     is_active = db.Column(db.Boolean(), unique=False, nullable=False)
+
+    def __init__(self,name, email, password):
+        self.name = name
+        self.email = email
+        self.password = password
+        self.is_active = True
 
     def __repr__(self):
         return f'<User {self.email}>'
-    
-    def generate_password(self, password):
-        return bcrypt.generate_password_hash(password)
-    
-    def check_password(self, password):
-        return bcrypt.check_password_hash(self.password, password)
-    
-    def create_user(self, email, password, is_active=True):
-        hashed_password = self.generate_password(password).decode('utf-8')
-        new_user = User(
-            email = email,
-            password = hashed_password,
-            is_active =is_active   
-        )
-        db.session.add(new_user)
-        db.session.commit()
-        return new_user
 
     def serialize(self):
         return {
-            "id": self.id,
+            "name": self.name,
             "email": self.email,
-            'is_active': self.is_active,
-            # do not serialize the password, i ts a security breach
+            "is_active" : True
+            # do not serialize the password, its a security breach
         }

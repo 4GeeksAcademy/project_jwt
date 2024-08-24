@@ -1,26 +1,25 @@
-import React from "react";
-import { useNavigate } from 'react-router-dom';
-import { useStore } from 'flux';
+import React, { useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { Context } from "../store/appContext";
+import Dashboard from "../component/dashboard";
+import { useLocalStorage } from "../hooks/hooks";
 
-export const Private = () => {
-    const { store, actions } = useStore();
-    const navigate = useNavigate();
+const Private = () => {
+  const { store, actions } = useContext(Context);
+  const navigate = useNavigate();
 
-    const handleLogout = async () => {
-        await actions.logout();
-        navigate('/login');
-    };
+  useEffect(() => {
+    console.log(store.token);
+    !store.token && navigate("/login");
+  }, [store.token]);
+  console.log(store.profile);
 
-    if (!store.isAuthenticated) {
-        navigate('/login');
-        return null; // Redirecting, so nothing to render
-    }
-
-    return (
-        <div>
-            <h2>Private Page</h2>
-            <p>Welcome, {store.user}</p>
-            <button onClick={handleLogout}>Logout</button>
-        </div>
-    );
+  return (
+    <>
+      {store?.token ? <Dashboard name={store.profile?.name} /> : navigate("/")}
+      {/*navigate("/")*/}
+    </>
+  );
 };
+
+export default Private;
